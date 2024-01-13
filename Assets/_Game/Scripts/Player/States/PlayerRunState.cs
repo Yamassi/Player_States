@@ -48,7 +48,7 @@ public class PlayerRunState : PlayerBaseState
                 stateSwitcher.SwitchState<PlayerIdleState>();
             if (!controlInput.IsRunPressed)
                 stateSwitcher.SwitchState<PlayerWalkState>();
-            if (characterController.isGrounded && controlInput.IsJumpPressed)
+            if (characterController.isGrounded && controlInput.IsJumpPressed && !Player.requireNewJumpPress)
                 stateSwitcher.SwitchState<PlayerJumpState>();
 
             characterController.Move(_appliedMovement * Time.deltaTime);

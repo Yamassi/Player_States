@@ -18,6 +18,7 @@ public class Player : MonoBehaviour, IStateSwitcher
     public static float gravity = -9.8f;
     public static float maxJumpHeight = 2;
     public static float maxJumpTime = 0.75f;
+    public static bool requireNewJumpPress = false;
 
     private void Awake()
     {
@@ -56,16 +57,16 @@ public class Player : MonoBehaviour, IStateSwitcher
     }
 
     private void OnJump(InputAction.CallbackContext context)
-        => _controlInput.IsJumpPressed = context.ReadValueAsButton();
-
+    {
+        _controlInput.IsJumpPressed = context.ReadValueAsButton();
+        requireNewJumpPress = false;
+    }
 
     private void OnRun(InputAction.CallbackContext context)
         => _controlInput.IsRunPressed = context.ReadValueAsButton();
 
-
     private void OnMove(InputAction.CallbackContext context)
         => _controlInput.CurrentMovementInput = context.ReadValue<Vector2>();
-
 
     public void SwitchState<T>() where T : PlayerBaseState
     {

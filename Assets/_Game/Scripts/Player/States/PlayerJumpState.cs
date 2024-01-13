@@ -7,6 +7,7 @@ public class PlayerJumpState : PlayerBaseState
     private CompositeDisposable _disposable = new CompositeDisposable();
 
     private float _initialJumpVelocity;
+    private float _checkTime = 0.3f;
 
     public PlayerJumpState(IStateSwitcher stateSwitcher, PlayerInput playerInput, ControlInput controlInput,
         CharacterController characterController, Animator animator, Transform transform)
@@ -21,7 +22,7 @@ public class PlayerJumpState : PlayerBaseState
         Debug.Log("Enter Jump State");
         animator.StopPlayback();
         animator.CrossFadeInFixedTime(_jumpHash, 0.1f);
-        
+
         Jump();
     }
 
@@ -33,16 +34,25 @@ public class PlayerJumpState : PlayerBaseState
 
     private void Jump()
     {
+        float time = 0;
         Observable.EveryUpdate().Subscribe(_ =>
         {
+            time += Time.deltaTime;
             HandleRotation();
 
             if (!controlInput.IsRunPressed)
                 HandleInput(_walkSpeed);
             if (controlInput.IsRunPressed)
                 HandleInput(_runSpeed);
-            
-            if (characterController.isGrounded && !controlInput.IsJumpPressed)
+
+            if (!characterController.isGrounded && time >= _checkTime)
+            {
+                Debug.Log("IS Not Grounded");
+                Player.requireNewJumpPress = true;
+            }
+
+            if (characterController.isGrounded && !controlInput.IsJumpPressed
+                || characterController.isGrounded && Player.requireNewJumpPress)
             {
                 if (controlInput.CurrentMovementInput is { x: 0, y: 0 })
                     stateSwitcher.SwitchState<PlayerIdleState>();

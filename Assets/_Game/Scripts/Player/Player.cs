@@ -16,6 +16,8 @@ public class Player : MonoBehaviour, IStateSwitcher
 
     public static float groundedGravity = -0.05f;
     public static float gravity = -9.8f;
+    public static float maxJumpHeight = 2;
+    public static float maxJumpTime = 0.75f;
 
     private void Awake()
     {
@@ -49,18 +51,21 @@ public class Player : MonoBehaviour, IStateSwitcher
         _playerInput.CharacterControls.Move.canceled += OnMove;
         _playerInput.CharacterControls.Run.started += OnRun;
         _playerInput.CharacterControls.Run.canceled += OnRun;
+        _playerInput.CharacterControls.Jump.started += OnJump;
+        _playerInput.CharacterControls.Jump.canceled += OnJump;
     }
+
+    private void OnJump(InputAction.CallbackContext context)
+        => _controlInput.IsJumpPressed = context.ReadValueAsButton();
+
 
     private void OnRun(InputAction.CallbackContext context)
-    {
-        _controlInput.IsRunPressed = context.ReadValueAsButton();
-    }
+        => _controlInput.IsRunPressed = context.ReadValueAsButton();
+
 
     private void OnMove(InputAction.CallbackContext context)
-    {
-        _controlInput.CurrentMovementInput = context.ReadValue<Vector2>();
-        Debug.Log($"CInput - {_controlInput.CurrentMovementInput}");
-    }
+        => _controlInput.CurrentMovementInput = context.ReadValue<Vector2>();
+
 
     public void SwitchState<T>() where T : PlayerBaseState
     {
@@ -85,6 +90,8 @@ public class Player : MonoBehaviour, IStateSwitcher
         _playerInput.CharacterControls.Move.canceled -= OnMove;
         _playerInput.CharacterControls.Run.started -= OnRun;
         _playerInput.CharacterControls.Run.canceled -= OnRun;
+        _playerInput.CharacterControls.Jump.started -= OnJump;
+        _playerInput.CharacterControls.Jump.canceled -= OnJump;
     }
 }
 

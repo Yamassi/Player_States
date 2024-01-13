@@ -3,21 +3,21 @@ using UnityEngine;
 
 public class PlayerIdleState : PlayerBaseState
 {
-    private int _isIdleHash;
+    private int _idleHash;
     private CompositeDisposable _disposable = new CompositeDisposable();
 
     public PlayerIdleState(IStateSwitcher stateSwitcher, PlayerInput playerInput, ControlInput controlInput,
         CharacterController characterController, Animator animator, Transform transform)
         : base(stateSwitcher, playerInput, controlInput, characterController, animator, transform)
     {
-        _isIdleHash = Animator.StringToHash("Idle");
+        _idleHash = Animator.StringToHash("Idle");
     }
 
     public override void Enter()
     {
         Debug.Log("Enter Idle State");
         animator.StopPlayback();
-        animator.CrossFade(_isIdleHash, 0.1f);
+        animator.CrossFadeInFixedTime(_idleHash, 0.1f);
         Idle();
     }
 
@@ -32,9 +32,11 @@ public class PlayerIdleState : PlayerBaseState
     {
         Observable.EveryUpdate().Subscribe(_ =>
         {
-            if (controlInput.CurrentMovementInput.x != 0
-                || controlInput.CurrentMovementInput.y != 0
-                && !controlInput.IsRunPressed)
+            if (controlInput.IsJumpPressed)
+                stateSwitcher.SwitchState<PlayerJumpState>();
+            else if (controlInput.CurrentMovementInput.x != 0
+                     || controlInput.CurrentMovementInput.y != 0
+                     && !controlInput.IsRunPressed)
                 stateSwitcher.SwitchState<PlayerWalkState>();
             else if (controlInput.CurrentMovementInput.x != 0
                      || controlInput.CurrentMovementInput.y != 0

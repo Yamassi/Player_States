@@ -5,7 +5,6 @@ public class PlayerIdleState : PlayerBaseState
 {
     private int _idleHash;
     private CompositeDisposable _disposable = new CompositeDisposable();
-    private float _idleTime;
 
     public PlayerIdleState(IStateSwitcher stateSwitcher, PlayerInput playerInput, ControlInput controlInput,
         CharacterController characterController, Animator animator, Transform transform)
@@ -19,7 +18,6 @@ public class PlayerIdleState : PlayerBaseState
         Debug.Log("Enter Idle State");
         animator.StopPlayback();
         animator.CrossFadeInFixedTime(_idleHash, 0.1f);
-        _idleTime = 0;
         Idle();
     }
 
@@ -34,10 +32,12 @@ public class PlayerIdleState : PlayerBaseState
     {
         Observable.EveryUpdate().Subscribe(_ =>
         {
-            _idleTime += Time.deltaTime;
-
-            if (characterController.isGrounded && controlInput.IsJumpPressed && !Player.requireNewJumpPress)
+            // Debug.Log($"characterController.isGrounded {characterController.isGrounded}");
+            if (controlInput.IsJumpPressed && !Player.requireNewJumpPress)
+            {
                 stateSwitcher.SwitchState<PlayerJumpState>();
+            }
+
             else if (controlInput.CurrentMovementInput.x != 0
                      || controlInput.CurrentMovementInput.y != 0
                      && !controlInput.IsRunPressed)

@@ -6,9 +6,9 @@ public class PlayerIdleState : PlayerBaseState
     private int _idleHash;
     private CompositeDisposable _disposable = new CompositeDisposable();
 
-    public PlayerIdleState(IStateSwitcher stateSwitcher, PlayerInput playerInput, ControlInput controlInput,
+    public PlayerIdleState(IStateSwitcher stateSwitcher, ControlInput controlInput,
         CharacterController characterController, Animator animator, Transform transform)
-        : base(stateSwitcher, playerInput, controlInput, characterController, animator, transform)
+        : base(stateSwitcher, controlInput, characterController, animator, transform)
     {
         _idleHash = Animator.StringToHash("Idle");
     }

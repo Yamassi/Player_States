@@ -9,12 +9,14 @@ public class PlayerAttackState : PlayerBaseState
     private bool _isFirstPunch = true, _isAnimationEnd = false;
     private CompositeDisposable _disposable = new CompositeDisposable();
     private CancellationTokenSource _cts;
+    private Weapon _weapon;
 
-    public PlayerAttackState(IStateSwitcher stateSwitcher, PlayerInput playerInput,
-        ControlInput controlInput, CharacterController characterController,
-        Animator animator, Transform transform) : base(stateSwitcher, playerInput, controlInput,
+    public PlayerAttackState(IStateSwitcher stateSwitcher,
+        ControlInput controlInput, CharacterController characterController, Weapon weapon,
+        Animator animator, Transform transform) : base(stateSwitcher, controlInput,
         characterController, animator, transform)
     {
+        _weapon = weapon;
         _punchLHash = Animator.StringToHash("PunchL");
         _punchRHash = Animator.StringToHash("PunchR");
     }
@@ -33,6 +35,8 @@ public class PlayerAttackState : PlayerBaseState
         _cts.Cancel();
         _cts.Dispose();
         animator.StopPlayback();
+        _weapon.ToggleHandL(false);
+        _weapon.ToggleHandR(false);
     }
 
     private async void Attack()
@@ -40,12 +44,21 @@ public class PlayerAttackState : PlayerBaseState
         if (Player.isUnarmed)
         {
             if (_isFirstPunch)
+            {
                 animator.CrossFadeInFixedTime(_punchLHash, 0.1f);
+                _weapon.ToggleHandL(true);
+            }
+
             if (!_isFirstPunch)
+            {
                 animator.CrossFadeInFixedTime(_punchRHash, 0.1f);
+                _weapon.ToggleHandR(true);
+            }
+
 
             _isFirstPunch = !_isFirstPunch;
         }
+
         await UniTask.Delay(500, cancellationToken: _cts.Token);
         Player.isRequiredNewAttackPress = true;
 
@@ -55,19 +68,17 @@ public class PlayerAttackState : PlayerBaseState
                 HandleInput(_walkSpeed);
             if (controlInput.IsRunPressed)
                 HandleInput(_runSpeed);
-            
+
             if (animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f)
             {
-                 if (controlInput.IsRunPressed && controlInput.CurrentMovementInput.x != 0
-                         || controlInput.CurrentMovementInput.y != 0)
+                if (controlInput.IsRunPressed && controlInput.CurrentMovementInput.x != 0
+                    || controlInput.CurrentMovementInput.y != 0)
                     stateSwitcher.SwitchState<PlayerRunState>();
-                 else  if (!controlInput.IsRunPressed && controlInput.CurrentMovementInput.x != 0
-                           || controlInput.CurrentMovementInput.y != 0)
-                     stateSwitcher.SwitchState<PlayerWalkState>();
-                 else if (controlInput.CurrentMovementInput is { x: 0, y: 0 })
+                else if (!controlInput.IsRunPressed && controlInput.CurrentMovementInput.x != 0
+                         || controlInput.CurrentMovementInput.y != 0)
+                    stateSwitcher.SwitchState<PlayerWalkState>();
+                else if (controlInput.CurrentMovementInput is { x: 0, y: 0 })
                     stateSwitcher.SwitchState<PlayerIdleState>();
-
-                
             }
         }).AddTo(_disposable);
     }

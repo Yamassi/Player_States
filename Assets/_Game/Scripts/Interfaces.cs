@@ -1,4 +1,4 @@
 public interface IStateSwitcher
 {
-    void SwitchState<T>() where T : PlayerBaseState;
+    void SwitchState<T>() where T : BaseState;
 }

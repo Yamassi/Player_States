@@ -10,9 +10,9 @@ public class PlayerWalkState : PlayerBaseState
 
     private CompositeDisposable _disposable = new CompositeDisposable();
 
-    public PlayerWalkState(IStateSwitcher stateSwitcher, PlayerInput playerInput, ControlInput controlInput,
+    public PlayerWalkState(IStateSwitcher stateSwitcher, ControlInput controlInput,
         CharacterController characterController, Animator animator, Transform transform)
-        : base(stateSwitcher, playerInput, controlInput, characterController, animator, transform)
+        : base(stateSwitcher, controlInput, characterController, animator, transform)
     {
         _walkingHash = Animator.StringToHash("Walk");
     }
@@ -42,7 +42,7 @@ public class PlayerWalkState : PlayerBaseState
 
             HandleInput(_walkSpeed);
 
-            
+
             if (characterController.isGrounded && controlInput.IsJumpPressed && !Player.isRequireNewJumpPress)
                 stateSwitcher.SwitchState<PlayerJumpState>();
             else if (controlInput.IsAttackPressed && !Player.isRequiredNewAttackPress)

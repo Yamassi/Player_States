@@ -10,9 +10,9 @@ public class PlayerRunState : PlayerBaseState
 
     private CompositeDisposable _disposable = new CompositeDisposable();
 
-    public PlayerRunState(IStateSwitcher stateSwitcher, PlayerInput playerInput, ControlInput controlInput,
+    public PlayerRunState(IStateSwitcher stateSwitcher, ControlInput controlInput,
         CharacterController characterController, Animator animator, Transform transform)
-        : base(stateSwitcher, playerInput, controlInput, characterController, animator, transform)
+        : base(stateSwitcher, controlInput, characterController, animator, transform)
     {
         _runHash = Animator.StringToHash("Run");
     }
@@ -44,12 +44,12 @@ public class PlayerRunState : PlayerBaseState
 
             HandleInput(_runSpeed);
 
-            
-             if (characterController.isGrounded && controlInput.IsJumpPressed && !Player.isRequireNewJumpPress)
+
+            if (characterController.isGrounded && controlInput.IsJumpPressed && !Player.isRequireNewJumpPress)
                 stateSwitcher.SwitchState<PlayerJumpState>();
             else if (controlInput.IsAttackPressed && !Player.isRequiredNewAttackPress)
                 stateSwitcher.SwitchState<PlayerAttackState>();
-            else  if (!controlInput.IsRunPressed)
+            else if (!controlInput.IsRunPressed)
                 stateSwitcher.SwitchState<PlayerWalkState>();
             else if (controlInput.CurrentMovementInput is { x: 0, y: 0 })
                 stateSwitcher.SwitchState<PlayerIdleState>();

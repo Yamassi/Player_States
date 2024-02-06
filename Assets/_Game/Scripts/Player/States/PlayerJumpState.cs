@@ -9,9 +9,9 @@ public class PlayerJumpState : PlayerBaseState
     private float _initialJumpVelocity;
     private float _checkTime = 0.3f;
 
-    public PlayerJumpState(IStateSwitcher stateSwitcher, PlayerInput playerInput, ControlInput controlInput,
+    public PlayerJumpState(IStateSwitcher stateSwitcher, ControlInput controlInput,
         CharacterController characterController, Animator animator, Transform transform)
-        : base(stateSwitcher, playerInput, controlInput, characterController, animator, transform)
+        : base(stateSwitcher, controlInput, characterController, animator, transform)
     {
         _jumpHash = Animator.StringToHash("Jump");
         SetupJumpVariables();

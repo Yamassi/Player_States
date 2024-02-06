@@ -1,9 +1,8 @@
 using UnityEngine;
 
-public abstract class PlayerBaseState
+public abstract class PlayerBaseState : BaseState
 {
     protected readonly IStateSwitcher stateSwitcher;
-    protected readonly PlayerInput playerInput;
     protected readonly CharacterController characterController;
     protected readonly Animator animator;
     protected readonly Transform transform;
@@ -16,20 +15,15 @@ public abstract class PlayerBaseState
     protected Vector3 _currentMovement;
     protected Vector3 _appliedMovement;
 
-    public PlayerBaseState(IStateSwitcher stateSwitcher, PlayerInput playerInput, ControlInput controlInput,
+    public PlayerBaseState(IStateSwitcher stateSwitcher, ControlInput controlInput,
         CharacterController characterController, Animator animator, Transform transform)
     {
         this.stateSwitcher = stateSwitcher;
-        this.playerInput = playerInput;
         this.characterController = characterController;
         this.animator = animator;
         this.transform = transform;
         this.controlInput = controlInput;
     }
-
-    public abstract void Enter();
-
-    public abstract void Exit();
 
     protected virtual void HandleGravity()
     {

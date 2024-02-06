@@ -9,8 +9,9 @@ public class Player : MonoBehaviour, IStateSwitcher
     private PlayerInput _playerInput;
     private CharacterController _characterController;
     private Animator _animator;
+    private Weapon _weapon;
 
-    private PlayerStateMachine _playerStateMachine;
+    private StateMachine _stateMachine;
     private List<PlayerBaseState> _allStates;
     private ControlInput _controlInput;
 
@@ -26,31 +27,32 @@ public class Player : MonoBehaviour, IStateSwitcher
     {
         _characterController = GetComponent<CharacterController>();
         _animator = GetComponentInChildren<Animator>();
+        _weapon = GetComponent<Weapon>();
 
         _playerInput = new PlayerInput();
         _controlInput = new();
 
-        _playerStateMachine = new();
+        _stateMachine = new();
 
         _allStates = new()
         {
-            new PlayerIdleState(this, _playerInput,
-                _controlInput, _characterController, _animator, transform),
+            new PlayerIdleState(this, _controlInput,
+                _characterController, _animator, transform),
 
-            new PlayerWalkState(this, _playerInput,
-                _controlInput, _characterController, _animator, transform),
+            new PlayerWalkState(this, _controlInput,
+                _characterController, _animator, transform),
 
-            new PlayerRunState(this, _playerInput,
-                _controlInput, _characterController, _animator, transform),
+            new PlayerRunState(this, _controlInput,
+                _characterController, _animator, transform),
 
-            new PlayerJumpState(this, _playerInput,
-                _controlInput, _characterController, _animator, transform),
+            new PlayerJumpState(this, _controlInput,
+                _characterController, _animator, transform),
 
-            new PlayerAttackState(this, _playerInput,
-                _controlInput, _characterController, _animator, transform),
+            new PlayerAttackState(this, _controlInput,
+                _characterController, _weapon, _animator, transform),
         };
 
-        _playerStateMachine.Init(_allStates[0]);
+        _stateMachine.Init(_allStates[0]);
 
         _playerInput.CharacterControls.Move.started += OnMove;
         _playerInput.CharacterControls.Move.performed += OnMove;
@@ -82,10 +84,10 @@ public class Player : MonoBehaviour, IStateSwitcher
     private void OnMove(InputAction.CallbackContext context)
         => _controlInput.CurrentMovementInput = context.ReadValue<Vector2>();
 
-    public void SwitchState<T>() where T : PlayerBaseState
+    public void SwitchState<T>() where T : BaseState
     {
         var state = _allStates.FirstOrDefault(s => s is T);
-        _playerStateMachine.ChangeState(state);
+        _stateMachine.ChangeState(state);
     }
 
     private void OnEnable()

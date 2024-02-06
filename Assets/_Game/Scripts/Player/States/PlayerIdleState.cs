@@ -15,7 +15,7 @@ public class PlayerIdleState : PlayerBaseState
 
     public override void Enter()
     {
-        Debug.Log("Enter Idle State");
+        // Debug.Log("Enter Idle State");
         animator.StopPlayback();
         animator.CrossFadeInFixedTime(_idleHash, 0.1f);
         Idle();
@@ -23,7 +23,7 @@ public class PlayerIdleState : PlayerBaseState
 
     public override void Exit()
     {
-        Debug.Log("Exit Idle State");
+        // Debug.Log("Exit Idle State");
         animator.StopPlayback();
         _disposable.Clear();
     }
@@ -33,10 +33,11 @@ public class PlayerIdleState : PlayerBaseState
         Observable.EveryUpdate().Subscribe(_ =>
         {
             // Debug.Log($"characterController.isGrounded {characterController.isGrounded}");
-            if (controlInput.IsJumpPressed && !Player.requireNewJumpPress)
-            {
+            if (controlInput.IsJumpPressed && !Player.isRequireNewJumpPress)
                 stateSwitcher.SwitchState<PlayerJumpState>();
-            }
+
+            else if (controlInput.IsAttackPressed && !Player.isRequiredNewAttackPress)
+                stateSwitcher.SwitchState<PlayerAttackState>();
 
             else if (controlInput.CurrentMovementInput.x != 0
                      || controlInput.CurrentMovementInput.y != 0

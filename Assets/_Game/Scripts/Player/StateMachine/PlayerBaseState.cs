@@ -15,7 +15,6 @@ public abstract class PlayerBaseState
 
     protected Vector3 _currentMovement;
     protected Vector3 _appliedMovement;
-    protected Vector3 _lastMovement;
 
     public PlayerBaseState(IStateSwitcher stateSwitcher, PlayerInput playerInput, ControlInput controlInput,
         CharacterController characterController, Animator animator, Transform transform)
@@ -70,12 +69,13 @@ public abstract class PlayerBaseState
     protected virtual void HandleRotation()
     {
         Vector3 positionToLookAt;
-        
+
         if (_currentMovement.x == 0 && _currentMovement.z == 0)
         {
             _currentMovement.x = transform.forward.x;
             _currentMovement.z = transform.forward.z;
         }
+
         positionToLookAt.x = _currentMovement.x;
         positionToLookAt.y = 0;
         positionToLookAt.z = _currentMovement.z;

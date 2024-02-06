@@ -18,7 +18,9 @@ public class Player : MonoBehaviour, IStateSwitcher
     public static float gravity = -9.8f;
     public static float maxJumpHeight = 2;
     public static float maxJumpTime = 0.75f;
-    public static bool requireNewJumpPress = false;
+    public static bool isRequireNewJumpPress = false;
+    public static bool isRequiredNewAttackPress = false;
+    public static bool isUnarmed = true;
 
     private void Awake()
     {
@@ -43,6 +45,9 @@ public class Player : MonoBehaviour, IStateSwitcher
 
             new PlayerJumpState(this, _playerInput,
                 _controlInput, _characterController, _animator, transform),
+
+            new PlayerAttackState(this, _playerInput,
+                _controlInput, _characterController, _animator, transform),
         };
 
         _playerStateMachine.Init(_allStates[0]);
@@ -54,12 +59,21 @@ public class Player : MonoBehaviour, IStateSwitcher
         _playerInput.CharacterControls.Run.canceled += OnRun;
         _playerInput.CharacterControls.Jump.started += OnJump;
         _playerInput.CharacterControls.Jump.canceled += OnJump;
+        _playerInput.CharacterControls.Attack.started += OnAttack;
+        _playerInput.CharacterControls.Attack.canceled += OnAttack;
     }
+
+    private void OnAttack(InputAction.CallbackContext context)
+    {
+        _controlInput.IsAttackPressed = context.ReadValueAsButton();
+        isRequiredNewAttackPress = false;
+    }
+
 
     private void OnJump(InputAction.CallbackContext context)
     {
         _controlInput.IsJumpPressed = context.ReadValueAsButton();
-        requireNewJumpPress = false;
+        isRequireNewJumpPress = false;
     }
 
     private void OnRun(InputAction.CallbackContext context)
@@ -101,4 +115,5 @@ public class ControlInput
     public Vector2 CurrentMovementInput;
     public bool IsJumpPressed;
     public bool IsRunPressed;
+    public bool IsAttackPressed;
 }

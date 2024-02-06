@@ -48,21 +48,21 @@ public class PlayerJumpState : PlayerBaseState
             if (!characterController.isGrounded && time >= _checkTime)
             {
                 Debug.Log("IS Not Grounded");
-                Player.requireNewJumpPress = true;
+                Player.isRequireNewJumpPress = true;
             }
 
             if (characterController.isGrounded && !controlInput.IsJumpPressed
-                || characterController.isGrounded && Player.requireNewJumpPress)
+                || characterController.isGrounded && Player.isRequireNewJumpPress)
             {
                 if (controlInput.CurrentMovementInput is { x: 0, y: 0 })
                     stateSwitcher.SwitchState<PlayerIdleState>();
 
-                if (!controlInput.IsRunPressed && controlInput.CurrentMovementInput.x != 0
-                    || controlInput.CurrentMovementInput.y != 0)
+                else if (!controlInput.IsRunPressed && controlInput.CurrentMovementInput.x != 0
+                         || controlInput.CurrentMovementInput.y != 0)
                     stateSwitcher.SwitchState<PlayerWalkState>();
 
-                if (controlInput.IsRunPressed && controlInput.CurrentMovementInput.x != 0
-                    || controlInput.CurrentMovementInput.y != 0)
+                else if (controlInput.IsRunPressed && controlInput.CurrentMovementInput.x != 0
+                         || controlInput.CurrentMovementInput.y != 0)
                     stateSwitcher.SwitchState<PlayerRunState>();
             }
 

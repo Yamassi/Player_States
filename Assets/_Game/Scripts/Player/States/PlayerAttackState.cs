@@ -59,7 +59,7 @@ public class PlayerAttackState : PlayerBaseState
             _isFirstPunch = !_isFirstPunch;
         }
 
-        await UniTask.Delay(500, cancellationToken: _cts.Token);
+        await UniTask.Delay(100, cancellationToken: _cts.Token);
         Player.isRequiredNewAttackPress = true;
 
         Observable.EveryUpdate().Subscribe(_ =>

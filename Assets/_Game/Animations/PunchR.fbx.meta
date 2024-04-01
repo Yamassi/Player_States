@@ -36,8 +36,8 @@ ModelImporter:
       name: PunchR
       takeName: mixamo.com
       internalID: -203655887218126122
-      firstFrame: 0
-      lastFrame: 60
+      firstFrame: 3
+      lastFrame: 43
       wrapMode: 0
       orientationOffsetY: -50
       level: 0

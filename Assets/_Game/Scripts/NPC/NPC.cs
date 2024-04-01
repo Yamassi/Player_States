@@ -7,6 +7,7 @@ public abstract class NPC : MonoBehaviour, IStateSwitcher
 {
     protected CharacterController _characterController;
     protected Animator _animator;
+    protected NavMeshMove _navMeshMove;
 
     protected StateMachine _stateMachine;
     protected List<BaseState> _allStates;
@@ -15,6 +16,7 @@ public abstract class NPC : MonoBehaviour, IStateSwitcher
     {
         _characterController = GetComponent<CharacterController>();
         _animator = GetComponentInChildren<Animator>();
+        _navMeshMove = GetComponent<NavMeshMove>();
     }
 
     public void SwitchState<T>() where T : BaseState

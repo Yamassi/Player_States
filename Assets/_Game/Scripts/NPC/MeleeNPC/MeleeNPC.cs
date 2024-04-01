@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class MeleeNPC : NPC
 {
+    [SerializeField] private List<Transform> patrolPoints;
     private NPCSensor _sensor;
 
     protected override void Awake()
@@ -15,8 +16,10 @@ public class MeleeNPC : NPC
 
         _allStates = new()
         {
-            new MeleeNPCIdleState(this, _characterController, _sensor, _animator, transform),
-            new MeleeNPCTakeHitState(this, _characterController, _sensor, _animator, transform)
+            new MeleeNPCIdleState(this, _characterController, _sensor, _animator, transform, patrolPoints),
+            new MeleeNPCTakeHitState(this, _characterController, _sensor, _animator, transform),
+            new MeleeNPCPatrolState(this, _characterController, _sensor, _animator, _navMeshMove, transform,
+                patrolPoints)
         };
 
         _stateMachine.Init(_allStates[0]);
